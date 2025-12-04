@@ -1,6 +1,8 @@
 from A_star_Weighted_A_star.a_star_solver import AStarSolver
 from CSP_AC3.csp_solver import CSPSolver
 from Controller.data_checking import DataChecker
+from HillClimbingSA.hill_climbing_sa import HillClimbSolver
+
 
 class PuzzleManager:
     def __init__(self, data:dict, algorithm:str):
@@ -30,4 +32,6 @@ class PuzzleManager:
         if self.__algorithm == "A*":
             a_star_solver = AStarSolver(self.__data)
             return a_star_solver.solve()
+        if self.__algorithm == "HillClimb":
+            return HillClimbSolver.solve(self.__data)
         return None, "Unknown algorithm"
