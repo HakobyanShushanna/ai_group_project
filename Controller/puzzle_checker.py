@@ -1,0 +1,33 @@
+from A_star_Weighted_A_star.a_star_solver import AStarSolver
+from CSP_AC3.csp_solver import CSPSolver
+from Controller.data_checking import DataChecker
+
+class PuzzleManager:
+    def __init__(self, data:dict, algorithm:str):
+        self.__data = data
+        self.__algorithm = algorithm
+
+    def run(self):
+        valid_result = self.__validate()
+        if valid_result is not None:
+            error = valid_result[1] if isinstance(valid_result, tuple) else None
+            if error:
+                return None, error
+
+        return self.__route()
+
+    def __validate(self):
+        try:
+            checker = DataChecker(self.__data)
+            if not checker.general_check():
+                return None, "Invalid puzzle: clues are inconsistent or out of range"
+        except ValueError as e:
+            return None, str(e)
+
+    def __route(self):
+        if self.__algorithm == "CSP":
+            return CSPSolver.solve(self.__data)
+        if self.__algorithm == "A*":
+            a_star_solver = AStarSolver(self.__data)
+            return a_star_solver.solve()
+        return None, "Unknown algorithm"
