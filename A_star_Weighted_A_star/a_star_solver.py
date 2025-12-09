@@ -9,8 +9,9 @@ class AStarSolver:
         self.__clues = data["clues"]
         self.__initial_grid = [
             [int(x) if str(x).isdigit() else 0 for x in row]
-            for row in data["grid"]
+            for row in data.get("grid", [[0] * data["n"] for _ in range(data["n"])])
         ]
+
         self.__weight = float(weight)
 
         self.__full_mask = (1 << self.__n) - 1
@@ -275,6 +276,6 @@ class AStarSolver:
         return {
             "expanded_nodes": self.__expanded,
             "generated_nodes": self.__generated,
-            "runtime_seconds": round(time.time() - self.__start_time, 4),
+            "runtime_sec": round(time.time() - self.__start_time, 4),
             "algorithm": f"A* (w={self.__weight})",
         }

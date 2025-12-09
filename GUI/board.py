@@ -1,13 +1,13 @@
 import streamlit as st
 
 from CluesGenerator.clues_generator import RandomPuzzleGenerator
-from Controller.puzzle_checker import PuzzleManager
+from Controller.puzzle_manager import PuzzleManager
 
 class Board:
     def __init__(self):
         self.n = st.number_input(
             "Grid size (n × n)",
-            min_value=1,
+            min_value=4,
             max_value=9,
             value=4,
             step=1,

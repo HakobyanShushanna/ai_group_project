@@ -2,6 +2,7 @@ from A_star_Weighted_A_star.a_star_solver import AStarSolver
 from CSP_AC3.csp_solver import CSPSolver
 from Controller.data_checking import DataChecker
 from HillClimbingSA.hill_climbing_sa import HillClimbSolver
+import concurrent.futures
 
 
 class PuzzleManager:
@@ -26,12 +27,28 @@ class PuzzleManager:
         except ValueError as e:
             return None, str(e)
 
+
     def __route(self):
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+
+            future = executor.submit(self.__run_algorithm)
+
+            try:
+                result, metrics = future.result(timeout=180)
+                return result, metrics
+
+            except concurrent.futures.TimeoutError:
+                return None, {"error": "Timeout after 600 seconds"}
+
+    def __run_algorithm(self):
         if self.__algorithm == "CSP":
             return CSPSolver.solve(self.__data)
+
         if self.__algorithm == "A*":
-            a_star_solver = AStarSolver(self.__data)
-            return a_star_solver.solve()
+            solver = AStarSolver(self.__data)
+            return solver.solve()
+
         if self.__algorithm == "HillClimb":
             return HillClimbSolver.solve(self.__data)
-        return None, "Unknown algorithm"
+
+        return None, {"error": "Unknown algorithm"}

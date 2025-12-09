@@ -19,28 +19,23 @@ class HillClimbSolver:
         self.__n: int = int(data["n"])
         self.__clues = data["clues"]
 
-        # main loop params
         self.__max_restarts = 12
         self.__max_iters_per_restart = max(2000, 250 * self.__n)
         self.__patience = 500
 
-        # temperature (for simulated-annealing style acceptance)
         self.__initial_temp = 1.0
         self.__final_temp = 1e-3
 
-        # tabu / sideways / perturbation
-        self.__tabu_size = 100                # number of recent swaps to keep
+        self.__tabu_size = 100
         self.__allow_sideways = True
-        self.__sideways_prob_start = 0.5      # probability to accept delta==0 at start of run
-        self.__perturb_frequency = 300        # every X iterations do a random perturbation
-        self.__perturb_strength = 1           # how many random row-shuffles to do during perturb
+        self.__sideways_prob_start = 0.5
+        self.__perturb_frequency = 300
+        self.__perturb_strength = 1
 
-        # randomness
         self.__seed: Optional[int] = None
         if self.__seed is not None:
             random.seed(self.__seed)
 
-        # runtime bookkeeping
         self.__iterations = 0
         self.__restarts = 0
         self.__best_score = float("inf")
@@ -287,7 +282,7 @@ class HillClimbSolver:
 
     def __format_result(self, grid: Optional[List[List[int]]], success: bool) -> Tuple[Optional[Dict[Tuple[int, int], int]], Dict[str, object]]:
         metrics = {
-            "time_taken": round(time.time() - self.__start_time, 4),
+            "runtime_sec": round(time.time() - self.__start_time, 4),
             "iterations": self.__iterations,
             "restarts": self.__restarts,
             "final_score": None if self.__best_score == float("inf") else self.__best_score,
